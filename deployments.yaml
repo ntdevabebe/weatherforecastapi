@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: weatherforecastapi
+spec:
+  selector:
+    matchLabels:
+      app: weatherforecastapi
+  template:
+    metadata:
+      labels:
+        app: weatherforecastapi
+    spec:
+      containers:
+      - name: weatherforecastapi
+        image: ntdevabebe/weatherforecastapi:latest
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 3000
+          name: "http"
+        - containerPort: 3001
+          name: "https"          
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: weatherforecastapi-servive
+spec:
+  selector:
+    app: weatherforecastapi
+  ports:
+    - name: http
+      protocol: TCP
+      port: 4000
+      targetPort: 3000
+    - name: https
+      protocol: TCP
+      port: 4001
+      targetPort: 3001
+  type: LoadBalancer
